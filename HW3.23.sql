@@ -1,0 +1,86 @@
+# 查询员工，部门，薪水所有信息
+SElECT * FROM employees;
+SELECT * FROM departments;
+SELECT * FROM salary;
+
+# 查询每个员工的姓名，地址和电话
+SELECT Name , Address , Phonenumber FROM employees;
+
+# 查询部门号和性别，并消除重复
+SELECT DISTINCT DEPARTMENTID , SEX FROM EMPLOYEES;
+
+# 查询empolyeesid为000001的员工的地址和电话
+SELECT ADDRESS , PHONENUMBER FROM EMPLOYEES
+       WHERE EMPLOYEEID = "000001" ;
+       
+# 查询月收入高于2000元的员工的员工号、姓名和收入
+SELECT EMPLOYEES.EMPLOYEEID , NAME , INCOME   ### 注意相同内容要标明来自哪一个表
+	  FROM SALARY JOIN EMPLOYEES ON EMPLOYEES.EMPLOYEEID = SALARY.EMPLOYEEID
+      WHERE SALARY.INCOME > 2000;
+      
+# 查询1970年以后出生的员工的姓名和住址
+SELECT NAME , ADDRESS FROM EMPLOYEES
+	WHERE YEAR(BIRTHDAY) > 1970;
+
+# 查询财务部的所有员工的员工号和姓名
+SELECT EMPLOYEEID , NAME 
+	FROM EMPLOYEES JOIN DEPARTMENTS ON employees.DepartmentID = departments.DepartmentID
+    WHERE EMPLOYEES.DEPARTMENTID = "1" ;
+
+# 查询Employees表中女员工的地址和电话，并将标题分别设置为地址和电话
+SELECT ADDRESS AS "地址" , PHONENUMBER AS "电话" FROM EMPLOYEES
+	WHERE SEX = "0";
+
+# 查询Employees表中员工的姓名和性别，并且性别值为1时显示“男”，值为0时显示“女”
+SELECT NAME , IF(SEX=1,"男","女") AS SEX FROM EMPLOYEES;
+
+# 查询Employees表中员工的姓名、住址和收入水平，收入水平：2000以下显示“低收入”，2000~3000元显示“中等收入”，3000元以上显示“高收入”
+SELECT NAME , ADDRESS , 
+	CASE 
+		WHEN SALARY.INCOME >3000 THEN "高收入"
+        WHEN SALARY.INCOME >2000 THEN "中等收入"
+        ELSE "低收入"
+	END AS INCOMELEVEL
+    FROM EMPLOYEES JOIN SALARY ON employees.EMPLOYEEID = SALARY.EMPLOYEEID ;  
+
+# 计算每个员工的实际收入，标题显示为“实际收入”，实际收入=Income-Outcome
+SELECT NAME , FORMAT(SALARY.INCOME - SALARY.OUTCOME , 2) AS "实际收入"
+	FROM EMPLOYEES JOIN SALARY ON employees.EMPLOYEEID = SALARY.EMPLOYEEID ;
+    
+# 获取员工的人数
+SELECT COUNT(employeeID) AS "员工人数" FROM EMPLOYEES ;
+
+# 计算Salary表中员工月收入的平均值
+SELECT FORMAT(AVG(INCOME),2) AS "收入平均值" FROM SALARY;
+
+# 计算Salary表中所有员工的总收入
+SELECT format(SUM(INCOME),2) AS "员工总收入" FROM SALARY;
+
+# 查询财务部员工的最高和最低实际收入
+SELECT FORMAT(MAX(INCOME-OUTCOME),2) AS '最高实际收入' , FORMAT(MIN(INCOME-OUTCOME),2) AS '最低实际收入'
+	FROM (SELECT EMPLOYEEID , NAME 
+		FROM EMPLOYEES JOIN DEPARTMENTS ON employees.DepartmentID = departments.DepartmentID
+		WHERE EMPLOYEES.DEPARTMENTID = "1" )REALCOME JOIN SALARY ; 
+
+# 查询姓“王”的员工的姓名和部门号
+SELECT NAME , employees.DEPARTMENTID FROM EMPLOYEES 
+    WHERE NAME LIKE "王%";
+    
+# 查询员工号中倒数第2个数字为0的员工的员工号和姓名
+SELECT EMPLOYEEID , NAME FROM EMPLOYEES
+	WHERE SUBSTRING(EMPLOYEEID , -2 , 1) = 0 ;
+    
+# 查询地址中含“中山”的员工的ID和部门号
+SELECT EMPLOYEEID , DEPARTMENTID FROM EMPLOYEES 
+	WHERE ADDRESS LIKE "中山%";
+
+# 查询收入在2000~3000间的员工的ID和姓名
+SELECT EMPLOYEES.EMPLOYEEID , NAME
+	FROM EMPLOYEES JOIN SALARY ON employees.EMPLOYEEID = SALARY.EMPLOYEEID
+    WHERE INCOME BETWEEN 2000 AND 3000;
+    
+# 查询部门号为1或3的员工的ID和姓名
+SELECT EMPLOYEEID , NAME FROM EMPLOYEES
+    WHERE EMPLOYEES.DEPARTMENTID = "1" OR "3" ;
+
+
